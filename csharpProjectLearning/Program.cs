@@ -26,7 +26,7 @@ namespace csharpProjectLearning {
             int player2Choice = 0;
             string choice;
 
-            while (IsGameEnded()) {
+            while (!IsGameEnded()) {
                 switch (playerTurn) {
                     case 1:
                         try {
@@ -34,7 +34,7 @@ namespace csharpProjectLearning {
                             choice = Console.ReadLine();
                             Int32.TryParse(choice, out player1Choice);
                             MakeMove(player1Choice);
-                            playerTurn = (invalidMove? 1: 2);
+                            playerTurn = (invalidMove ? 1 : 2);
                         } catch (Exception) {
                             Console.WriteLine("Invalid input, please enter a number 1-9");
                             playerTurn = 1;
@@ -47,7 +47,7 @@ namespace csharpProjectLearning {
                             choice = Console.ReadLine();
                             Int32.TryParse(choice, out player2Choice);
                             MakeMove(player2Choice);
-                            playerTurn = (invalidMove? 2: 1);
+                            playerTurn = (invalidMove ? 2 : 1);
                         } catch (Exception) {
                             Console.WriteLine("Invalid input, please enter a number 1-9");
                             playerTurn = 2;
@@ -70,7 +70,7 @@ namespace csharpProjectLearning {
                     invalidMove = true;
                     return;
                 }
-                board[0, col] = (playerTurn == 1 ? player1Move: player2Move);
+                board[0, col] = (playerTurn == 1 ? player1Move : player2Move);
             } else if (playerChoice < 7 && playerChoice > 3) {
                 int col = playerChoice - 4;
                 if (board[1, col] == "O" || board[1, col] == "X") {
@@ -92,7 +92,6 @@ namespace csharpProjectLearning {
             invalidMove = false;
             Console.Clear();
             PrintBoard();
-
         }
 
         static void PrintBoard() {
@@ -129,8 +128,10 @@ namespace csharpProjectLearning {
             CheckDiagLeft();
             //Check diagonal right
             CheckDiagRight();
+            //Check Draw
+            bool isDraw = CheckDraw();
 
-            return winner.Equals("");
+            return (String.IsNullOrEmpty(winner) && !isDraw ? false : true);
         }
 
         static void CheckRow() {
@@ -189,7 +190,6 @@ namespace csharpProjectLearning {
                 winner = V1;
             }
         }
-
         static void CheckDiagRight() {
             int player1Counter = 0;
             int player2Counter = 0;
@@ -206,6 +206,18 @@ namespace csharpProjectLearning {
             if (player2Counter == 3) {
                 winner = V1;
             }
+        }
+
+        static bool CheckDraw() {
+            foreach (var field in board) {
+                if (field == player1Move || field == player2Move) {
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+            if (String.IsNullOrEmpty(winner)) winner = "DRAW MATCH";
+            return true;
         }
     }
 }
